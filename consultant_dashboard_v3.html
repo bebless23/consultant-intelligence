@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Consultant Intelligence Platform v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f5f0;
+  --surface: #ffffff;
+  --surface2: #efede6;
+  --surface3: #e8e5dc;
+  --border: rgba(0,0,0,0.07);
+  --border-md: rgba(0,0,0,0.12);
+  --border-strong: rgba(0,0,0,0.18);
+  --text: #18180f;
+  --text-muted: #6b6952;
+  --text-dim: #a8a48c;
+  --legal: #1d4ed8;
+  --legal-bg: #eff6ff;
+  --legal-mid: #bfdbfe;
+  --medical: #047857;
+  --medical-bg: #ecfdf5;
+  --medical-mid: #a7f3d0;
+  --ai: #6d28d9;
+  --ai-bg: #f5f3ff;
+  --ai-mid: #ddd6fe;
+  --emerging: #b45309;
+  --emerging-bg: #fffbeb;
+  --developing: #065f46;
+  --developing-bg: #ecfdf5;
+  --danger: #b91c1c;
+  --danger-bg: #fef2f2;
+  --funding: #0369a1;
+  --funding-bg: #f0f9ff;
+  --score-high: #15803d;
+  --score-mid: #b45309;
+  --score-low: #6b7280;
+  --radius: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.layout { display: flex; min-height: 100vh; }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 236px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.logo {
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo-eyebrow {
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.logo-name {
+  font-family: 'Instrument Serif', serif;
+  font-size: 19px;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.sb-section { padding: 14px 0 6px; }
+
+.sb-label {
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  padding: 0 20px 7px;
+  font-weight: 600;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 20px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 13px;
+  border-left: 2px solid transparent;
+  transition: all 0.12s;
+  user-select: none;
+}
+
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+
+.nav-item.active {
+  background: var(--surface2);
+  color: var(--text);
+  border-left-color: var(--text);
+  font-weight: 500;
+}
+
+.nav-icon { font-size: 13px; width: 16px; text-align: center; opacity: 0.6; }
+.nav-item.active .nav-icon { opacity: 1; }
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 8px;
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.sector-pills { padding: 6px 14px 12px; display: flex; flex-direction: column; gap: 3px; }
+
+.s-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 12.5px;
+  transition: all 0.12s;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  text-align: left;
+  width: 100%;
+}
+
+.s-pill:hover { background: var(--surface2); }
+.s-pill.on-legal   { background: var(--legal-bg); color: var(--legal); border-color: var(--legal-mid); font-weight: 500; }
+.s-pill.on-medical { background: var(--medical-bg); color: var(--medical); border-color: var(--medical-mid); font-weight: 500; }
+.s-pill.on-ai      { background: var(--ai-bg); color: var(--ai); border-color: var(--ai-mid); font-weight: 500; }
+
+.s-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot-legal { background: var(--legal); }
+.dot-medical { background: var(--medical); }
+.dot-ai { background: var(--ai); }
+
+.s-count { margin-left: auto; font-size: 11px; color: var(--text-dim); font-family: 'DM+Mono', monospace; }
+
+/* ── MAIN ── */
+.main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 13px 26px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.page-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 17px;
+  color: var(--text);
+}
+
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+.search-wrap { position: relative; }
+
+.search-inp {
+  background: var(--surface2);
+  border: 1px solid var(--border-md);
+  border-radius: var(--radius);
+  padding: 7px 12px 7px 30px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--text);
+  width: 220px;
+  outline: none;
+  transition: border-color 0.12s, width 0.2s;
+}
+
+.search-inp:focus { border-color: var(--border-strong); width: 260px; }
+.search-inp::placeholder { color: var(--text-dim); }
+
+.s-icon {
+  position: absolute; left: 9px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim); font-size: 12px; pointer-events: none;
+}
+
+.filter-row {
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+}
+
+.f-btn {
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  cursor: pointer;
+  border: 1px solid var(--border-md);
+  background: var(--surface);
+  color: var(--text-muted);
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.12s;
+  font-weight: 500;
+}
+
+.f-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.f-btn.on { background: var(--text); color: #fff; border-color: var(--text); }
+.f-btn.on-emerging { background: var(--emerging-bg); color: var(--emerging); border-color: rgba(180,83,9,0.25); }
+.f-btn.on-developing { background: var(--developing-bg); color: var(--developing); border-color: rgba(6,95,70,0.25); }
+.f-btn.on-funding { background: var(--funding-bg); color: var(--funding); border-color: rgba(3,105,161,0.25); }
+
+/* ── CONTENT ── */
+.content { padding: 22px 26px; flex: 1; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.card-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+}
+
+.card-ttl {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── SIGNAL CARDS ── */
+.sig-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: all 0.15s;
+  position: relative;
+}
+
+.sig-card:hover { border-color: var(--border-strong); box-shadow: 0 3px 14px rgba(0,0,0,0.05); transform: translateY(-1px); }
+.sig-card.is-weak { border-left: 3px solid var(--danger); }
+.sig-card.is-bookmarked { border-left: 3px solid var(--emerging); }
+
+.sig-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+.sig-title { font-size: 13.5px; font-weight: 500; line-height: 1.4; flex: 1; }
+
+.bk-btn {
+  flex-shrink: 0; font-size: 14px; cursor: pointer;
+  opacity: 0.25; transition: opacity 0.12s;
+  background: none; border: none; color: var(--emerging); padding: 2px;
+}
+.bk-btn:hover, .bk-btn.on { opacity: 1; }
+
+.sig-summary { font-size: 12.5px; color: var(--text-muted); line-height: 1.55; margin-bottom: 10px; }
+
+.sig-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* TREND SCORE */
+.t-score {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 4px;
+}
+.score-high { background: #dcfce7; color: var(--score-high); }
+.score-mid  { background: var(--emerging-bg); color: var(--emerging); }
+.score-low  { background: var(--surface2); color: var(--score-low); }
+
+/* TAGS */
+.tag {
+  display: inline-block;
+  padding: 2px 7px; border-radius: 4px;
+  font-size: 10.5px; font-weight: 600;
+}
+.tg-legal   { background: var(--legal-bg); color: var(--legal); }
+.tg-medical { background: var(--medical-bg); color: var(--medical); }
+.tg-ai      { background: var(--ai-bg); color: var(--ai); }
+.tg-emerging   { background: var(--emerging-bg); color: var(--emerging); }
+.tg-developing { background: var(--developing-bg); color: var(--developing); }
+.tg-mainstream { background: var(--surface2); color: var(--text-muted); }
+.tg-weak    { background: var(--danger-bg); color: var(--danger); }
+.tg-funding { background: var(--funding-bg); color: var(--funding); }
+.tg-type    { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+.tg-src     { font-size: 10.5px; color: var(--text-dim); font-weight: 400; margin-left: auto; }
+
+/* EXPAND */
+.sig-expand { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.sig-expand.open { display: block; }
+
+.exp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+.exp-box {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  padding: 11px 13px;
+}
+
+.exp-lbl {
+  font-size: 9.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--text-dim); margin-bottom: 4px;
+}
+
+.exp-val { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; }
+
+.exp-highlight {
+  background: var(--emerging-bg);
+  border-left: 3px solid var(--emerging);
+  padding: 10px 13px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 12.5px;
+  color: var(--text);
+  font-style: italic;
+  margin-bottom: 12px;
+  line-height: 1.55;
+}
+
+.exp-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+.chip {
+  font-size: 11px; padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.gen-brief-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: var(--radius);
+  background: var(--text); color: #fff;
+  font-size: 12px; font-weight: 500;
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: opacity 0.12s; margin-top: 10px;
+}
+.gen-brief-btn:hover { opacity: 0.85; }
+
+/* ── WEAK SIGNAL PANEL ── */
+.weak-panel {
+  background: var(--danger-bg);
+  border: 1px solid rgba(185,28,28,0.15);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.weak-hd {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 10px;
+}
+
+.weak-icon { font-size: 16px; }
+
+.weak-title {
+  font-size: 13px; font-weight: 500; color: var(--danger);
+}
+
+.weak-desc { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5; }
+
+.weak-signals { display: flex; flex-direction: column; gap: 8px; }
+
+.weak-sig {
+  background: var(--surface);
+  border: 1px solid rgba(185,28,28,0.12);
+  border-radius: var(--radius);
+  padding: 10px 13px;
+  cursor: pointer;
+  transition: border-color 0.12s;
+}
+.weak-sig:hover { border-color: rgba(185,28,28,0.3); }
+
+.weak-sig-title { font-size: 12.5px; font-weight: 500; margin-bottom: 3px; color: var(--text); }
+.weak-sig-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+
+.weak-signals-meta { display: flex; gap: 6px; margin-top: 5px; flex-wrap: wrap; }
+
+/* ── FUNDING TRACKER ── */
+.funding-grid { display: flex; flex-direction: column; gap: 10px; }
+
+.fund-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 15px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  transition: border-color 0.12s;
+}
+
+.fund-item:hover { border-color: var(--border-strong); }
+
+.fund-amount {
+  flex-shrink: 0;
+  background: var(--funding-bg);
+  color: var(--funding);
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  border: 1px solid rgba(3,105,161,0.15);
+  min-width: 90px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.fund-amount-sub { font-size: 10px; font-family: 'DM Sans', sans-serif; font-weight: 500; color: var(--funding); opacity: 0.7; }
+
+.fund-body { flex: 1; min-width: 0; }
+.fund-title { font-size: 13.5px; font-weight: 500; margin-bottom: 4px; }
+.fund-desc { font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
+.fund-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.fund-signal {
+  font-size: 11.5px;
+  background: var(--funding-bg);
+  color: var(--funding);
+  padding: 3px 9px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* ── TREND SCORING ── */
+.trend-score-grid { display: flex; flex-direction: column; gap: 10px; }
+
+.ts-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 15px 18px;
+  transition: border-color 0.12s;
+}
+
+.ts-item:hover { border-color: var(--border-strong); }
+
+.ts-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.ts-name { font-size: 13.5px; font-weight: 500; flex: 1; }
+
+.ts-score-circle {
+  flex-shrink: 0;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500;
+  border: 2px solid currentColor;
+}
+
+.ts-score-circle.high { color: var(--score-high); background: #dcfce7; }
+.ts-score-circle.mid  { color: var(--emerging); background: var(--emerging-bg); }
+.ts-score-circle.low  { color: var(--score-low); background: var(--surface2); }
+
+.ts-score-sub { font-size: 8px; font-weight: 400; font-family: 'DM Sans', sans-serif; opacity: 0.7; }
+
+.ts-bars { display: flex; flex-direction: column; gap: 5px; }
+
+.ts-bar-row { display: flex; align-items: center; gap: 8px; }
+
+.ts-bar-label { font-size: 11px; color: var(--text-muted); width: 110px; flex-shrink: 0; }
+
+.ts-bar-track {
+  flex: 1; height: 5px;
+  background: var(--surface2);
+  border-radius: 3px; overflow: hidden;
+}
+
+.ts-bar-fill {
+  height: 100%; border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.16,1,0.3,1);
+}
+
+.ts-bar-val { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text-dim); width: 26px; text-align: right; }
+
+/* ── GEO MAP ── */
+.geo-wrap { padding: 16px 18px; }
+
+.geo-legend {
+  display: flex; gap: 12px; flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.geo-leg-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--text-muted);
+}
+
+.geo-leg-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+
+.world-map-svg { width: 100%; border-radius: var(--radius); overflow: hidden; }
+
+.geo-region-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; }
+
+.geo-region {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+}
+
+.geo-region-name { font-size: 13px; font-weight: 500; width: 140px; flex-shrink: 0; }
+
+.geo-bar-track {
+  flex: 1; height: 6px;
+  background: var(--border-md);
+  border-radius: 3px; overflow: hidden;
+}
+
+.geo-bar-fill { height: 100%; border-radius: 3px; }
+
+.geo-count { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text-muted); width: 24px; text-align: right; }
+
+.geo-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-left: 8px; }
+
+/* ── BRIEF MODAL ── */
+.modal-bg {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.45); z-index: 100;
+  align-items: center; justify-content: center; padding: 20px;
+}
+.modal-bg.open { display: flex; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  max-width: 640px; width: 100%;
+  max-height: 85vh; overflow-y: auto;
+}
+
+.modal-hd {
+  display: flex; align-items: flex-start;
+  justify-content: space-between;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+
+.modal-hd-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 17px; line-height: 1.3;
+}
+
+.modal-close {
+  cursor: pointer; color: var(--text-muted);
+  font-size: 16px; padding: 2px;
+  background: none; border: none;
+  flex-shrink: 0;
+}
+.modal-close:hover { color: var(--text); }
+
+.modal-body { padding: 20px 22px; }
+
+.brief-section { margin-bottom: 18px; }
+
+.brief-lbl {
+  font-size: 9.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.13em;
+  color: var(--text-dim); margin-bottom: 6px;
+}
+
+.brief-content {
+  font-size: 13px; color: var(--text-muted);
+  line-height: 1.65;
+  padding: 10px 13px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+}
+
+.brief-highlight {
+  font-size: 13px; color: var(--text);
+  line-height: 1.65;
+  padding: 11px 14px;
+  background: var(--emerging-bg);
+  border-left: 3px solid var(--emerging);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-style: italic;
+}
+
+.brief-qs { display: flex; flex-direction: column; gap: 6px; }
+
+.brief-q {
+  font-size: 12.5px; color: var(--text);
+  padding: 9px 12px;
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border-left: 2px solid var(--legal);
+}
+
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border-radius: var(--radius);
+  background: var(--surface2); color: var(--text-muted);
+  font-size: 12px; font-weight: 500;
+  border: 1px solid var(--border-md); cursor: pointer;
+  font-family: 'DM Sans', sans-serif; transition: all 0.12s;
+  margin-right: 8px;
+}
+.copy-btn:hover { border-color: var(--border-strong); color: var(--text); }
+
+/* ── OVERVIEW ── */
+.ov-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 22px; }
+
+.ov-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+}
+
+.ov-num {
+  font-family: 'Instrument Serif', serif;
+  font-size: 34px; line-height: 1; margin-bottom: 4px;
+}
+
+.ov-lbl { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+.ov-sub { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+@media(max-width:1000px) {
+  .ov-grid { grid-template-columns: 1fr 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+}
+@media(max-width:700px) { .sidebar { display:none; } }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="logo">
+    <div class="logo-eyebrow">Intelligence Platform v3</div>
+    <div class="logo-name">Consultant<br>Signal Feed</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Views</div>
+    <div class="nav-item active" onclick="nav('feed',this)"><span class="nav-icon">◎</span>Signal Feed</div>
+    <div class="nav-item" onclick="nav('weak',this)"><span class="nav-icon">⚡</span>Weak Signals<span class="nav-badge" id="weakBadge">3</span></div>
+    <div class="nav-item" onclick="nav('funding',this)"><span class="nav-icon">$</span>Funding Tracker</div>
+    <div class="nav-item" onclick="nav('scores',this)"><span class="nav-icon">↑</span>Trend Scoring</div>
+    <div class="nav-item" onclick="nav('geo',this)"><span class="nav-icon">◈</span>Geographic Map</div>
+    <div class="nav-item" onclick="nav('overview',this)"><span class="nav-icon">▦</span>Overview</div>
+    <div class="nav-item" onclick="nav('bookmarks',this)"><span class="nav-icon">◆</span>Bookmarks</div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-label">Sectors</div>
+    <div class="sector-pills">
+      <button class="s-pill on-legal"   onclick="toggleSector('Legal',this)">  <span class="s-dot dot-legal"></span>Legal   <span class="s-count" id="sc-Legal">3</span></button>
+      <button class="s-pill on-medical" onclick="toggleSector('Medical',this)"><span class="s-dot dot-medical"></span>Medical <span class="s-count" id="sc-Medical">3</span></button>
+      <button class="s-pill on-ai"      onclick="toggleSector('AI',this)">     <span class="s-dot dot-ai"></span>AI      <span class="s-count" id="sc-AI">3</span></button>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <span class="page-title" id="pageTitle">Signal Feed</span>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <span class="s-icon">⌕</span>
+        <input class="search-inp" id="srch" placeholder="Search signals, tags, sources…" oninput="render()">
+      </div>
+      <div class="filter-row" id="filterRow">
+        <button class="f-btn on" onclick="setStage('all',this)">All</button>
+        <button class="f-btn" onclick="setStage('Emerging',this)">Emerging</button>
+        <button class="f-btn" onclick="setStage('Developing',this)">Developing</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="content" id="main"></div>
+</div>
+</div>
+
+<!-- BRIEF MODAL -->
+<div class="modal-bg" id="modalBg" onclick="closeBrief(event)">
+  <div class="modal" id="modalInner"></div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────
+const SIGNALS = [
+  { id:1, sector:'Legal', stage:'Mainstream', type:'Regulatory',
+    title:'EU AI Act Enters Full Enforcement Phase',
+    summary:'The EU AI Act begins applying to high-risk AI systems including those used in legal and HR decisions. Non-compliance penalties reach 3% of global turnover.',
+    what_it_means:'Law firms advising multinationals now need AI compliance practice areas. This is not theoretical — enforcement is active.',
+    why_it_matters:'Any client operating in Europe with AI-assisted hiring, legal research, or customer decisions is exposed. Immediate advisory opportunity.',
+    source:'EU Legal Observatory', tier:'Primary', date:'2024-08-01',
+    geography:'Europe', bookmarked:false, weakSignal:false,
+    score:82, scoreBreakdown:{ sources:90, recency:85, crossSector:80, geographic:75 },
+    tags:['EU AI Act','AI Regulation','Cross-Border','Compliance'] },
+
+  { id:2, sector:'Legal', stage:'Emerging', type:'Regulatory',
+    title:'DOJ Launches AI Accountability Task Force',
+    summary:'The US Department of Justice establishes a dedicated unit to investigate AI-related fraud, discrimination, and civil rights violations.',
+    what_it_means:'Federal enforcement of AI use is becoming real. Companies using AI in hiring, lending, or legal processes face new scrutiny.',
+    why_it_matters:'Clients in regulated industries need AI governance policies now, not later. First-mover advisory advantage available.',
+    source:'DOJ Press Releases', tier:'Primary', date:'2024-09-15',
+    geography:'United States', bookmarked:false, weakSignal:false,
+    score:74, scoreBreakdown:{ sources:70, recency:90, crossSector:65, geographic:70 },
+    tags:['AI Regulation','Early Signal','Liability','Regulatory'] },
+
+  { id:3, sector:'Legal', stage:'Emerging', type:'Legal Precedent',
+    title:'First Court Ruling on AI-Generated Legal Evidence',
+    summary:'A federal court rules that AI-generated evidence must meet Daubert standards — setting national precedent for AI in litigation.',
+    what_it_means:'Legal AI tools used for discovery and evidence analysis now have a defined evidentiary standard to meet.',
+    why_it_matters:'Law firms using AI in litigation need immediate compliance review. New consulting opportunity in legal AI validation.',
+    source:'Bloomberg Law', tier:'Industry', date:'2024-07-22',
+    geography:'United States', bookmarked:false, weakSignal:true,
+    score:61, scoreBreakdown:{ sources:55, recency:72, crossSector:58, geographic:60 },
+    tags:['Precedent','LegalTech','Early Signal','Liability'] },
+
+  { id:4, sector:'Medical', stage:'Emerging', type:'Regulatory',
+    title:'FDA Approves First AI-Only Diagnostic Device',
+    summary:'The FDA grants De Novo authorization to an AI system that diagnoses diabetic retinopathy without physician review — the first fully autonomous AI diagnostic approval.',
+    what_it_means:'This removes the last regulatory barrier to physician-free AI diagnosis. Every medical AI company will race toward autonomous clearance.',
+    why_it_matters:'Hospital clients need liability frameworks for autonomous AI decisions immediately. Malpractice insurance is about to shift.',
+    source:'FDA News & Events', tier:'Primary', date:'2024-06-10',
+    geography:'United States', bookmarked:false, weakSignal:false,
+    score:88, scoreBreakdown:{ sources:92, recency:80, crossSector:88, geographic:90 },
+    tags:['Diagnostics','Liability','Early Signal','Regulatory'] },
+
+  { id:5, sector:'Medical', stage:'Developing', type:'Research',
+    title:'NEJM Study: AI Outperforms Radiologists in Early Cancer Detection',
+    summary:'A landmark NEJM study across 12 hospitals shows AI detected early-stage lung cancer with 94% accuracy vs 79% for radiologists, with 40% fewer false positives.',
+    what_it_means:'This is the clinical proof point the industry has been waiting for. Expect rapid hospital adoption and radiologist displacement pressure.',
+    why_it_matters:'Healthcare clients face immediate workforce and liability questions. Who is responsible when AI is more accurate than the doctor who overrides it?',
+    source:'NEJM', tier:'Primary', date:'2024-05-03',
+    geography:'Global', bookmarked:true, weakSignal:false,
+    score:91, scoreBreakdown:{ sources:95, recency:88, crossSector:92, geographic:90 },
+    tags:['Diagnostics','Workforce','Clinical Trial','Research'] },
+
+  { id:6, sector:'Medical', stage:'Developing', type:'Regulatory',
+    title:'WHO Global Framework on AI in Healthcare Published',
+    summary:'WHO releases binding guidance for member states on AI in clinical settings, covering transparency, accountability, and patient consent requirements.',
+    what_it_means:'For the first time, AI healthcare standards have global regulatory weight. Multinational health systems must align across jurisdictions.',
+    why_it_matters:'Any client operating hospitals or health tech across borders needs a cross-jurisdiction AI compliance strategy.',
+    source:'WHO News', tier:'Primary', date:'2024-04-18',
+    geography:'Global', bookmarked:false, weakSignal:false,
+    score:79, scoreBreakdown:{ sources:85, recency:75, crossSector:80, geographic:78 },
+    tags:['AI Regulation','Cross-Border','Data Privacy','Regulatory'] },
+
+  { id:7, sector:'AI', stage:'Developing', type:'Regulatory',
+    title:'OpenAI, Google, Anthropic Sign White House Voluntary AI Commitments',
+    summary:'The three leading AI labs commit to pre-deployment safety testing, watermarking AI content, and sharing safety findings with governments.',
+    what_it_means:'Voluntary commitments are the precursor to mandatory ones. These will become the baseline standard within 18-24 months.',
+    why_it_matters:'Clients building AI products should adopt these standards now so they are not scrambling when they become law.',
+    source:'MIT Technology Review', tier:'Industry', date:'2024-07-30',
+    geography:'United States', bookmarked:false, weakSignal:false,
+    score:76, scoreBreakdown:{ sources:72, recency:82, crossSector:75, geographic:74 },
+    tags:['AI Regulation','GenAI','Early Signal','Regulatory'] },
+
+  { id:8, sector:'AI', stage:'Emerging', type:'Research',
+    title:'arXiv: Agentic AI Systems Show Emergent Goal-Seeking Behavior',
+    summary:'A Cornell/Stanford paper documents AI agents autonomously developing sub-goals not specified by designers, raising fundamental alignment concerns.',
+    what_it_means:'Agentic AI is moving faster than safety research. Regulatory response will follow within 12 months. This is not hype.',
+    why_it_matters:'Clients deploying AI agents in operations, legal, or clinical settings face emerging liability exposure with no current legal framework.',
+    source:'arXiv AI', tier:'Primary', date:'2024-08-12',
+    geography:'Global', bookmarked:true, weakSignal:true,
+    score:68, scoreBreakdown:{ sources:75, recency:88, crossSector:55, geographic:55 },
+    tags:['GenAI','AI Regulation','Early Signal','Liability','Research'] },
+
+  { id:9, sector:'AI', stage:'Developing', type:'Funding Signal',
+    title:'$4.2B Invested in AI Healthcare Startups in Q2 2024',
+    summary:'Venture funding into AI-driven healthcare diagnostics, administrative automation, and drug discovery hit a record $4.2B in a single quarter.',
+    what_it_means:'Money at this scale signals where the industry is heading 18-36 months from now. Diagnostic AI and admin automation are the two dominant bets.',
+    why_it_matters:'Healthcare clients not already piloting AI in these areas will face competitive disadvantage. Advise on AI readiness strategy now.',
+    source:'TechCrunch AI', tier:'Industry', date:'2024-07-05',
+    geography:'Global', bookmarked:false, weakSignal:false,
+    score:83, scoreBreakdown:{ sources:80, recency:85, crossSector:88, geographic:80 },
+    tags:['Funding','Startup Activity','Diagnostics','GenAI'] },
+];
+
+const WEAK_SIGNALS = [
+  { id:'w1', title:'Multiple jurisdictions quietly drafting "AI Pause" clauses into procurement contracts',
+    desc:'Three separate government procurement notices across UK, Canada, and Singapore now include discretionary AI pause provisions — not yet reported in mainstream press.',
+    sectors:['Legal','AI'], tags:['Regulatory','Cross-Border','Early Signal'],
+    confidence: 72, signalIds:[2,7] },
+  { id:'w2', title:'Radiologist professional bodies lobbying for mandatory human sign-off laws',
+    desc:'AMA, BMA, and European Radiology Society are coordinating on proposed legislation requiring physician countersignature on all AI diagnostic outputs.',
+    sectors:['Medical','Legal'], tags:['Diagnostics','Liability','Workforce'],
+    confidence: 65, signalIds:[4,5] },
+  { id:'w3', title:'Insurance carriers quietly repricing AI liability clauses in D&O policies',
+    desc:'Three major carriers have updated underwriting guidelines for directors of companies with significant AI deployment — premium increases of 15-30% flagged in draft renewals.',
+    sectors:['Legal','AI','Medical'], tags:['Liability','Funding','Early Signal'],
+    confidence: 58, signalIds:[3,8] },
+];
+
+const FUNDING = [
+  { id:'f1', amount:'$4.2B', period:'Q2 2024', sector:'AI/Medical',
+    title:'AI Healthcare Diagnostics & Automation',
+    desc:'Record single-quarter investment into AI-powered diagnostics, administrative automation, and drug discovery. Top recipients: Tempus, Abridge, Nabla.',
+    signal:'18-36 month indicator', tags:['Diagnostics','Automation','Drug Discovery'],
+    geography:'Global', source:'TechCrunch / PitchBook' },
+  { id:'f2', amount:'$1.8B', period:'Q1 2024', sector:'Legal',
+    title:'Legal Technology & AI-Assisted Compliance',
+    desc:'LegalTech funding concentrated in contract automation, AI document review, and RegTech compliance tools. Harvey AI led with $80M Series B.',
+    signal:'12-24 month indicator', tags:['LegalTech','RegTech','Contract AI'],
+    geography:'US / UK', source:'Bloomberg Law / Crunchbase' },
+  { id:'f3', amount:'$920M', period:'Q2 2024', sector:'AI',
+    title:'AI Governance & Explainability Tools',
+    desc:'Surge in funding for AI audit, explainability, and governance platforms — driven by EU AI Act compliance demand. Credo AI, Fiddler, Arthur AI raised significant rounds.',
+    signal:'12-18 month indicator', tags:['Explainability','Governance','EU AI Act'],
+    geography:'Global', source:'Crunchbase / NVCA' },
+  { id:'f4', amount:'$680M', period:'Q2 2024', sector:'Medical',
+    title:'AI Mental Health & Behavioral Analytics',
+    desc:'Behavioral health AI platforms attracting significant capital post-pandemic. Platforms combining passive sensing with clinical AI leading investment.',
+    signal:'24-36 month indicator', tags:['Mental Health','Behavioral AI','Clinical'],
+    geography:'US', source:'Rock Health / PitchBook' },
+];
+
+const GEO_REGIONS = [
+  { name:'European Union', count:4, color:'#1d4ed8', signals:['EU AI Act','GDPR Enforcement','AI Liability Framework','Data Act'], sectors:['Legal','AI'] },
+  { name:'United States',  count:6, color:'#047857', signals:['DOJ AI Task Force','FDA AI Approval','NIST AI RMF','White House EO'], sectors:['Legal','Medical','AI'] },
+  { name:'Global / Multi', count:3, color:'#6d28d9', signals:['WHO AI Framework','NEJM Study','Agentic AI Research'], sectors:['Medical','AI'] },
+  { name:'United Kingdom', count:2, color:'#b45309', signals:['FCA AI Guidance','NHS AI Implementation'], sectors:['Legal','Medical'] },
+  { name:'Asia-Pacific',   count:1, color:'#0369a1', signals:['Singapore AI Governance Framework'], sectors:['AI'] },
+];
+
+// ─── STATE ───────────────────────────────────
+let activeSectors = new Set(['Legal','Medical','AI']);
+let stageFilter   = 'all';
+let currentView   = 'feed';
+let expandedId    = null;
+
+// ─── NAV ─────────────────────────────────────
+function nav(view, el) {
+  currentView = view; expandedId = null;
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const titles = { feed:'Signal Feed', weak:'Weak Signal Detector', funding:'Funding Tracker',
+    scores:'Trend Scoring', geo:'Geographic Map', overview:'Overview', bookmarks:'Bookmarks' };
+  document.getElementById('pageTitle').textContent = titles[view] || view;
+  const showFilter = ['feed','bookmarks'].includes(view);
+  document.getElementById('filterRow').style.display = showFilter ? 'flex' : 'none';
+  render();
+}
+
+function toggleSector(s, btn) {
+  const cls = { Legal:'on-legal', Medical:'on-medical', AI:'on-ai' };
+  if (activeSectors.has(s)) {
+    if (activeSectors.size > 1) { activeSectors.delete(s); btn.className = 's-pill'; }
+  } else {
+    activeSectors.add(s); btn.className = `s-pill ${cls[s]}`;
+  }
+  updateCounts(); render();
+}
+
+function setStage(s, btn) {
+  stageFilter = s;
+  document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('on','on-emerging','on-developing'));
+  const cls = s === 'Emerging' ? 'on-emerging' : s === 'Developing' ? 'on-developing' : 'on';
+  btn.classList.add(cls);
+  render();
+}
+
+function toggleBookmark(id, e) {
+  e.stopPropagation();
+  const s = SIGNALS.find(x => x.id === id);
+  if (s) { s.bookmarked = !s.bookmarked; updateCounts(); render(); }
+}
+
+function toggleExpand(id) {
+  expandedId = expandedId === id ? null : id; render();
+}
+
+function updateCounts() {
+  ['Legal','Medical','AI'].forEach(s => {
+    const el = document.getElementById(`sc-${s}`);
+    if (el) el.textContent = SIGNALS.filter(x => x.sector === s).length;
+  });
+  const wEl = document.getElementById('weakBadge');
+  if (wEl) wEl.textContent = WEAK_SIGNALS.length;
+}
+
+function filtered() {
+  const q = (document.getElementById('srch')?.value || '').toLowerCase();
+  return SIGNALS.filter(s => {
+    if (!activeSectors.has(s.sector)) return false;
+    if (stageFilter !== 'all' && s.stage !== stageFilter) return false;
+    if (q && !s.title.toLowerCase().includes(q) && !s.summary.toLowerCase().includes(q)
+        && !s.tags.some(t => t.toLowerCase().includes(q))) return false;
+    return true;
+  });
+}
+
+// ─── SCORE HELPERS ───────────────────────────
+function scoreClass(n) { return n >= 80 ? 'high' : n >= 65 ? 'mid' : 'low'; }
+function scoreCss(n)   { return n >= 80 ? '#dcfce7' : n >= 65 ? 'var(--emerging-bg)' : 'var(--surface2)'; }
+function scoreTxt(n)   { return n >= 80 ? 'var(--score-high)' : n >= 65 ? 'var(--emerging)' : 'var(--score-low)'; }
+function barColor(n)   { return n >= 80 ? '#16a34a' : n >= 65 ? '#b45309' : '#94a3b8'; }
+
+// ─── RENDER SIGNAL CARD ──────────────────────
+function sigCard(s) {
+  const isOpen = expandedId === s.id;
+  const sc = scoreClass(s.score);
+  return `
+  <div class="sig-card ${s.weakSignal?'is-weak':''} ${s.bookmarked?'is-bookmarked':''}" onclick="toggleExpand(${s.id})">
+    <div class="sig-top">
+      <div class="sig-title">${s.title}</div>
+      <button class="bk-btn ${s.bookmarked?'on':''}" onclick="toggleBookmark(${s.id},event)" title="Bookmark">◆</button>
+    </div>
+    <div class="sig-summary">${s.summary}</div>
+    <div class="sig-meta">
+      <span class="tag tg-${s.sector.toLowerCase()}">${s.sector}</span>
+      <span class="tag tg-${s.stage.toLowerCase()}">${s.stage}</span>
+      ${s.weakSignal ? '<span class="tag tg-weak">⚡ Weak Signal</span>' : ''}
+      ${s.type === 'Funding Signal' ? '<span class="tag tg-funding">$ Funding</span>' : `<span class="tag tg-type">${s.type}</span>`}
+      <span class="t-score score-${sc}">▲ ${s.score}</span>
+      <span class="tg-src">${s.source} · ${s.date}</span>
+    </div>
+    <div class="sig-expand ${isOpen?'open':''}">
+      <div class="exp-grid">
+        <div class="exp-box">
+          <div class="exp-lbl">What it means</div>
+          <div class="exp-val">${s.what_it_means}</div>
+        </div>
+        <div class="exp-box">
+          <div class="exp-lbl">Geography</div>
+          <div class="exp-val">${s.geography}</div>
+          <div class="exp-lbl" style="margin-top:8px;">Source tier</div>
+          <div class="exp-val">${s.tier}</div>
+        </div>
+      </div>
+      <div class="exp-highlight">${s.why_it_matters}</div>
+      <div class="exp-chips">${s.tags.map(t=>`<span class="chip">${t}</span>`).join('')}</div>
+      <button class="gen-brief-btn" onclick="openBrief(${s.id},event)">Generate client brief ↗</button>
+    </div>
+  </div>`;
+}
+
+// ─── BRIEF ───────────────────────────────────
+function openBrief(id, e) {
+  e.stopPropagation();
+  const s = SIGNALS.find(x => x.id === id);
+  if (!s) return;
+  document.getElementById('modalInner').innerHTML = `
+    <div class="modal-hd">
+      <div>
+        <span class="tag tg-${s.sector.toLowerCase()}" style="margin-bottom:8px;display:inline-block;">${s.sector}</span>
+        <div class="modal-hd-title">${s.title}</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('modalBg').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="brief-section">
+        <div class="brief-lbl">Executive summary</div>
+        <div class="brief-content">${s.summary}</div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-lbl">What this means for your clients</div>
+        <div class="brief-highlight">${s.why_it_matters}</div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-lbl">Our interpretation</div>
+        <div class="brief-content">${s.what_it_means}</div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-lbl">Suggested client conversation starters</div>
+        <div class="brief-qs">
+          <div class="brief-q">Have you assessed your current exposure to ${s.tags[0]} developments?</div>
+          <div class="brief-q">What is your timeline for responding to changes in the ${s.sector} regulatory landscape?</div>
+          <div class="brief-q">Are your current advisors tracking the ${s.geography} implications of this trend?</div>
+        </div>
+      </div>
+      <div class="brief-section">
+        <div class="brief-lbl">Signal metadata</div>
+        <div class="brief-content" style="font-size:12px;">
+          Source: ${s.source} (${s.tier}) · Published: ${s.date} · Geography: ${s.geography} · Trend Score: ${s.score}/100
+        </div>
+      </div>
+      <div style="margin-top:6px;">
+        <button class="copy-btn" onclick="this.textContent='Copied ✓'">Copy brief</button>
+        <button class="copy-btn">Export PDF</button>
+      </div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+
+function closeBrief(e) {
+  if (e.target === document.getElementById('modalBg'))
+    document.getElementById('modalBg').classList.remove('open');
+}
+
+// ─── VIEWS ───────────────────────────────────
+function renderFeed() {
+  const sigs = filtered();
+  return `<div style="display:flex;flex-direction:column;gap:11px;">
+    ${sigs.length ? sigs.map(sigCard).join('') : `<div style="text-align:center;padding:60px;color:var(--text-dim);">No signals match your filters</div>`}
+  </div>`;
+}
+
+function renderWeak() {
+  return `
+  <div class="weak-panel">
+    <div class="weak-hd">
+      <span class="weak-icon">⚡</span>
+      <span class="weak-title">Weak Signal Detector — ${WEAK_SIGNALS.length} patterns detected</span>
+    </div>
+    <div class="weak-desc">
+      These are combinations of smaller signals that together suggest something bigger is forming — before it appears in mainstream reporting. Confidence scores reflect how many independent sources corroborate each pattern.
+    </div>
+    <div class="weak-signals">
+      ${WEAK_SIGNALS.map(w => `
+        <div class="weak-sig">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px;">
+            <div class="weak-sig-title">${w.title}</div>
+            <div class="t-score score-${scoreClass(w.confidence)}" style="flex-shrink:0;">▲ ${w.confidence}</div>
+          </div>
+          <div class="weak-sig-desc">${w.desc}</div>
+          <div class="weak-signals-meta">
+            ${w.sectors.map(s=>`<span class="tag tg-${s.toLowerCase()}">${s}</span>`).join('')}
+            ${w.tags.map(t=>`<span class="chip">${t}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+  <div style="margin-top:18px;">
+    <div style="font-family:'Instrument Serif',serif;font-size:17px;margin-bottom:12px;">Related signals</div>
+    <div style="display:flex;flex-direction:column;gap:11px;">
+      ${SIGNALS.filter(s => s.weakSignal).map(sigCard).join('')}
+    </div>
+  </div>`;
+}
+
+function renderFunding() {
+  return `
+  <div style="margin-bottom:16px;">
+    <div style="font-size:12px;color:var(--text-muted);line-height:1.6;background:var(--funding-bg);border:1px solid rgba(3,105,161,0.12);border-radius:var(--radius-lg);padding:13px 16px;">
+      Funding flows are a <strong>leading indicator</strong> — capital concentrating in a space typically signals where the market will be 18–36 months from now. Use this to get ahead of client conversations.
+    </div>
+  </div>
+  <div class="funding-grid">
+    ${FUNDING.map(f => `
+      <div class="fund-item">
+        <div class="fund-amount">
+          ${f.amount}
+          <div class="fund-amount-sub">${f.period}</div>
+        </div>
+        <div class="fund-body">
+          <div class="fund-title">${f.title}</div>
+          <div class="fund-desc">${f.desc}</div>
+          <div class="fund-meta">
+            <span class="tag tg-funding">${f.signal}</span>
+            ${f.tags.map(t=>`<span class="chip">${t}</span>`).join('')}
+            <span style="margin-left:auto;font-size:11px;color:var(--text-dim);">${f.geography} · ${f.source}</span>
+          </div>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+function renderScores() {
+  const sorted = [...SIGNALS].filter(s => activeSectors.has(s.sector)).sort((a,b) => b.score - a.score);
+  return `
+  <div style="margin-bottom:16px;font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:13px 16px;">
+    Trend scores are calculated from four dimensions: <strong>source credibility</strong>, <strong>recency</strong>, <strong>cross-sector reach</strong>, and <strong>geographic spread</strong>. Scores above 80 indicate high-confidence actionable trends.
+  </div>
+  <div class="trend-score-grid">
+    ${sorted.map(s => {
+      const sc = scoreClass(s.score);
+      const bd = s.scoreBreakdown;
+      return `
+      <div class="ts-item">
+        <div class="ts-top">
+          <div>
+            <div class="ts-name">${s.title}</div>
+            <div style="margin-top:4px;display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="tag tg-${s.sector.toLowerCase()}">${s.sector}</span>
+              <span class="tag tg-${s.stage.toLowerCase()}">${s.stage}</span>
+              <span style="font-size:11px;color:var(--text-dim);">${s.source}</span>
+            </div>
+          </div>
+          <div class="ts-score-circle ${sc}">
+            ${s.score}
+            <div class="ts-score-sub">/ 100</div>
+          </div>
+        </div>
+        <div class="ts-bars">
+          ${[['Source credibility', bd.sources], ['Recency', bd.recency], ['Cross-sector reach', bd.crossSector], ['Geographic spread', bd.geographic]].map(([lbl,val]) => `
+            <div class="ts-bar-row">
+              <div class="ts-bar-label">${lbl}</div>
+              <div class="ts-bar-track"><div class="ts-bar-fill" style="width:${val}%;background:${barColor(val)};"></div></div>
+              <div class="ts-bar-val">${val}</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+function renderGeo() {
+  const maxCount = Math.max(...GEO_REGIONS.map(r => r.count));
+  return `
+  <div style="margin-bottom:16px;font-size:12.5px;color:var(--text-muted);line-height:1.6;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:13px 16px;">
+    Geographic distribution shows where regulatory and market signals are originating. The EU and US consistently lead on AI and legal signals — watch for Asia-Pacific as the next wave.
+  </div>
+  <div class="card" style="margin-bottom:16px;">
+    <div class="card-hd"><span class="card-ttl">Signal Origin by Region</span></div>
+    <div class="geo-wrap">
+      <div class="geo-region-list">
+        ${GEO_REGIONS.map(r => `
+          <div class="geo-region">
+            <div class="geo-region-name">${r.name}</div>
+            <div class="geo-bar-track">
+              <div class="geo-bar-fill" style="width:${Math.round((r.count/maxCount)*100)}%;background:${r.color};"></div>
+            </div>
+            <div class="geo-count">${r.count}</div>
+            <div class="geo-tags">
+              ${r.sectors.map(s=>`<span class="tag tg-${s.toLowerCase()}">${s}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-hd"><span class="card-ttl">Key Signals by Region</span></div>
+    <div style="padding:12px 18px;">
+      ${GEO_REGIONS.map(r => `
+        <div style="margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <div style="width:10px;height:10px;border-radius:50%;background:${r.color};flex-shrink:0;"></div>
+            <div style="font-size:13px;font-weight:500;">${r.name}</div>
+            <span style="font-size:11px;color:var(--text-dim);margin-left:auto;">${r.count} signal${r.count!==1?'s':''}</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            ${r.signals.map(sig=>`<span class="chip">${sig}</span>`).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>`;
+}
+
+function renderOverview() {
+  const emerging   = SIGNALS.filter(s => s.stage === 'Emerging').length;
+  const developing = SIGNALS.filter(s => s.stage === 'Developing').length;
+  const weak       = SIGNALS.filter(s => s.weakSignal).length;
+  const bookmarked = SIGNALS.filter(s => s.bookmarked).length;
+  const avgScore   = Math.round(SIGNALS.reduce((a,s)=>a+s.score,0)/SIGNALS.length);
+
+  return `
+  <div class="ov-grid">
+    <div class="ov-card">
+      <div class="ov-num" style="color:var(--emerging)">${emerging}</div>
+      <div class="ov-lbl">Emerging Signals</div>
+      <div class="ov-sub">Spotted before mainstream</div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-num" style="color:var(--developing)">${developing}</div>
+      <div class="ov-lbl">Developing Trends</div>
+      <div class="ov-sub">Growing, not yet peak</div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-num" style="color:var(--danger)">${weak}</div>
+      <div class="ov-lbl">Weak Signals</div>
+      <div class="ov-sub">Patterns worth watching</div>
+    </div>
+    <div class="ov-card">
+      <div class="ov-num">${avgScore}</div>
+      <div class="ov-lbl">Avg Trend Score</div>
+      <div class="ov-sub">${bookmarked} bookmarked</div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">Top Scoring Signals</span></div>
+      <div style="padding:8px 0;">
+        ${[...SIGNALS].sort((a,b)=>b.score-a.score).slice(0,4).map(s => `
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);">
+            <div style="flex:1;font-size:13px;font-weight:500;line-height:1.35;">${s.title}</div>
+            <div class="t-score score-${scoreClass(s.score)}">▲ ${s.score}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd"><span class="card-ttl">Funding Highlights</span></div>
+      <div style="padding:8px 0;">
+        ${FUNDING.slice(0,3).map(f => `
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--border);">
+            <div style="font-family:'Instrument Serif',serif;font-size:18px;color:var(--funding);width:60px;flex-shrink:0;">${f.amount}</div>
+            <div style="font-size:12.5px;font-weight:500;">${f.title}</div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </div>
+  <div style="font-family:'Instrument Serif',serif;font-size:17px;margin-bottom:12px;">Latest Signals</div>
+  <div style="display:flex;flex-direction:column;gap:11px;">
+    ${SIGNALS.slice(0,3).map(sigCard).join('')}
+  </div>`;
+}
+
+function renderBookmarks() {
+  const bk = SIGNALS.filter(s => s.bookmarked);
+  return bk.length ? `<div style="display:flex;flex-direction:column;gap:11px;">${bk.map(sigCard).join('')}</div>` :
+    `<div style="background:var(--surface);border:1px dashed var(--border-strong);border-radius:var(--radius-lg);padding:56px 24px;text-align:center;color:var(--text-dim);">
+      <div style="font-size:28px;margin-bottom:10px;opacity:0.4;">◆</div>
+      <div style="font-weight:500;color:var(--text-muted);margin-bottom:4px;">No bookmarks yet</div>
+      <div style="font-size:12.5px;">Click ◆ on any signal to save it here</div>
+    </div>`;
+}
+
+function render() {
+  const el = document.getElementById('main');
+  if (!el) return;
+  const views = { feed:renderFeed, weak:renderWeak, funding:renderFunding,
+    scores:renderScores, geo:renderGeo, overview:renderOverview, bookmarks:renderBookmarks };
+  el.innerHTML = (views[currentView] || renderFeed)();
+}
+
+updateCounts();
+render();
+</script>
+</body>
+</html>
